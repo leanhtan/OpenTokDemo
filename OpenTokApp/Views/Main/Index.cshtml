@@ -1,0 +1,24 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Main</h2>
+<head>
+    <meta charset="utf-8" />
+    <title>OpenTok App</title>
+    <script src="//static.opentok.com/webrtc/v2.4/js/TB.min.js"></script>
+    <script type="text/javascript">
+        var apiKey = '@Model.apiKey';
+        var sessionId = '@Model.sessionId';
+        var token = '@Model.token';
+    </script>
+    <script src="~/Content/js/helloworld1.0.js"></script>
+</head>
+<body>
+    <h2>OpenTok App</h2>
+
+    <div id="publisher"></div>
+
+    <div id="subscribers"></div>
+</body>

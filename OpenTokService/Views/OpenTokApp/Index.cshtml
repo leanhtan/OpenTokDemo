@@ -1,0 +1,54 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Main</h2>
+<head>
+    <meta charset="utf-8" />
+    <title>OpenTok App</title>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://static.opentok.com/v2/js/opentok.min.js"></script>
+    <script type="text/javascript">
+        var apiKey = '@Model.apiKey';
+        var sessionId = '@Model.sessionId';
+        var token = '@Model.token';
+        var SAMPLE_SERVER_BASE_URL = 'https://webapidev.nightingales.com.sg:444/api/OpenTok';
+    </script>
+    <script src="/Content/js/helloworld.js"></script>
+    <link rel="stylesheet" type="text/css" href="/Content/style/style.css" />
+</head>
+<body>
+
+    <div id="opentok_console" class="opentok_console">
+        <div id="links" class="links">
+            <div class="header">Control Panel</div>
+            <div id="controlpanel">
+                <input id="txtName" type="text" />
+                <input type="button" value="Connect" id="connectLink" onclick="javascript:connect()" />
+                <input type="button" value="Leave" id="disconnectLink" onclick="javascript:disconnect()" style="display: none" />
+                <button type="button" id="view" onClick="javascript:viewArchive()" disabled>View Archive</button>
+                <div class="header">Connected Users</div>
+                <div id="onlineusers">
+                </div>
+
+            </div>
+        </div>
+
+        <div class="videos">
+            <div id="myCamera" class="publisherContainer"></div>
+            <div id="subscribers" class="subscribersContainer"></div>
+
+        </div>
+    </div>
+    <div id="acceptCallBox">
+        <!-- Should be initially hidden using CSS -->
+        <div id="acceptCallLabel"></div>
+        <input type="button" id="callAcceptButton" value="Accept" /> <input type="button" id="callRejectButton" value="Reject" />
+    </div>
+    <script type="text/javascript" charset="utf-8">
+		show('connectLink');
+    </script>
+</body>
+

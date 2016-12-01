@@ -71,7 +71,7 @@ function startPublishing() {
         var publisherDiv = document.createElement('div'); // Create a div for the publisher to replace
         publisherDiv.setAttribute('id', 'opentok_publisher');
         parentDiv.appendChild(publisherDiv);
-        var publisherProps = { width: VIDEO_WIDTH, height: VIDEO_HEIGHT, name: name };
+        var publisherProps = { width: VIDEO_WIDTH, height: VIDEO_HEIGHT, name: name, frameRate: 30, resolution: '1280x720' };
         publisher = OT.initPublisher(apiKey, publisherDiv.id, publisherProps);  // Pass the replacement div id and properties
         session.publish(publisher);
         publisher.on("streamCreated", function (event) {  //access the self video 
@@ -245,12 +245,12 @@ function signalEventHandler(event) {
         //***************************Call Begin*********************************//
     }
     else if (event.type == "signal:acceptcall") {
+
         var data;
         if (event.data.callaccepted) {
             data = event.data.callaccepted.toString().split('|');
         }
-        else
-        {
+        else {
             var info = event.data.split(':');
             data = info[1].replace(/["}]/g, "").split('|');
         }
@@ -263,12 +263,20 @@ function signalEventHandler(event) {
             addStream(_streams[_streamId]);
         }
         else if (_callaccepted == 'no') {
-                alert('Call rejected by ' + _name);
-                document.getElementById("btn_" + _streamId).click();
-            }
+            alert('Call rejected by ' + _name);
+            document.getElementById("btn_" + _streamId).click();
+        }
     }
     else if (event.type == "signal:endcall") {
-        data = event.data.streamId.toString().split("|");
+        stopArchive();
+        var data;
+        if (event.data.streamId) {
+            data = event.data.streamId.toString().split("|");
+        }
+        else {
+            var info = event.data.split(':');
+            data = info[1].replace(/["}]/g, "").split('|');
+        }
         _streamId = data[0];
 
         removeStream(_streams[_streamId]);
@@ -364,5 +372,5 @@ function viewArchive() {
             popout.close();
         }, 1000);
     });
-    
+
 }

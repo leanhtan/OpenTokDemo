@@ -59,5 +59,44 @@ namespace OpenTokService.Controllers
             _openTokService.GetOpenTok().DeleteArchive(model.ArchiveId);
             return Ok();
         }
+
+        [Route("DeleteAll")]
+        [HttpPost]
+        [AllowAnonymous]
+        public IHttpActionResult DeleteAll()
+        {
+            var archiveList = _openTokService.GetOpenTok().ListArchives();
+            foreach (var archive in archiveList)
+            {
+                if (archive.Status == ArchiveStatus.AVAILABLE)
+                {
+                    Delete(new ArchiveViewModel { ArchiveId = archive.Id.ToString() });
+                }
+            }
+            return Ok();
+        }
+
+        [Route("StopAll")]
+        [HttpPost]
+        [AllowAnonymous]
+        public IHttpActionResult StopAll()
+        {
+            try
+            {
+                var archiveList = _openTokService.GetOpenTok().ListArchives();
+                foreach (var archive in archiveList)
+                {
+                    if (archive.Status == ArchiveStatus.STARTED || archive.Status == ArchiveStatus.PAUSED)
+                    {
+                        Stop(new ArchiveViewModel { ArchiveId = archive.Id.ToString() });
+                    }
+                }
+                return Ok();
+            }
+            catch(Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
     }
 }

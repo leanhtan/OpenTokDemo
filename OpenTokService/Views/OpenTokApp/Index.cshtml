@@ -1,9 +1,10 @@
 ﻿
 @{
     ViewBag.Title = "Index";
+    Layout = "";
 }
 
-<h2>Main</h2>
+<h2>Video Streaming Demo</h2>
 <head>
     <meta charset="utf-8" />
     <title>OpenTok App</title>
@@ -16,7 +17,7 @@
         var token = '@Model.token';
         var SAMPLE_SERVER_BASE_URL = 'https://webapidev.nightingales.com.sg:444/api/OpenTok';
     </script>
-    <script src="/Content/js/helloworld.js"></script>
+    <script src="~/Content/js/opentok.js"></script>
     <link rel="stylesheet" type="text/css" href="/Content/style/style.css" />
 </head>
 <body>

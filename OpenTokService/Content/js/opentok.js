@@ -92,22 +92,16 @@ function stopPublishing() {
 
 
 function sessionConnectedHandler(event) {
-
     startPublishing();
     show('disconnectLink');
     hide('connectLink');
 }
 
 function streamCreatedHandler(event) {
-
-
     addButton(event.stream);                         //add call button when a new user comes online
-
 }
 
 function addButton(selectedStream) {
-
-
     if (!document.getElementById("btn_" + selectedStream.streamId)) {
         var button = document.createElement("input");
         var buttonContainer = document.getElementById("onlineusers");
@@ -122,7 +116,8 @@ function addButton(selectedStream) {
     }
 }
 function removeButton(selectedStream) {
-
+    stopArchive();
+    removeStream(_streams[selectedStream.streamId]);
     var btn = document.getElementById("btn_" + selectedStream.streamId)
     var buttonContainer = document.getElementById("onlineusers");
     delete _streams[selectedStream.streamId];
@@ -341,6 +336,7 @@ function addStream(stream) {
     document.getElementById("subscribers").appendChild(subscriberDiv);
     var subscriberProps = { width: VIDEO_WIDTH, height: VIDEO_HEIGHT };
     subscribers[stream.streamId] = session.subscribe(stream, subscriberDiv.id, subscriberProps);
+    subscribers[stream.streamId].restrictFrameRate(false);
 }
 
 
@@ -367,10 +363,7 @@ function stopArchive() {
 function viewArchive() {
     $.post(SAMPLE_SERVER_BASE_URL + '/View', { "ArchiveId": archiveID.toString() })
     .done(function (data) {
-        var popout = window.open(data);
-        window.setTimeout(function () {
-            popout.close();
-        }, 1000);
+       window.open(data);
     });
 
 }

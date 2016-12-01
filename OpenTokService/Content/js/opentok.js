@@ -11,6 +11,7 @@ var subscribers = new Array();
 var _streams = new Array();
 var _connections = new Array();
 var archiveID;
+var isSubscribe = false;
 
 function connect() {
     archiveID = null;
@@ -116,15 +117,18 @@ function addButton(selectedStream) {
     }
 }
 function removeButton(selectedStream) {
-    stopArchive();
-    removeStream(_streams[selectedStream.streamId]);
+    if (isSubscribe) {
+        removeStream(_streams[selectedStream.streamId]);
+        stopArchive();
+    }
+    delete _streams[selectedStream.streamId];
     var btn = document.getElementById("btn_" + selectedStream.streamId)
     var buttonContainer = document.getElementById("onlineusers");
-    delete _streams[selectedStream.streamId];
     if (btn) {
         buttonContainer.removeChild(btn);
 
     }
+
 }
 
 function removeAllButtons() {
@@ -139,20 +143,22 @@ function endCall(obj, label) {
     _stream = _streams[obj.id.replace("btn_", "")];
     obj.value = label;
     obj.setAttribute("onclick", "beginCall(this)");
-    removeStream(_stream);
-    session.signal({
-        type: "endcall",
-        to: _stream.connection,
-        data: { streamId: _selfstream.streamId + "|" + _selfstream.name }
-    },
-              function (error) {
-                  if (error) {
-                      console.log("signal error: " + error.reason);
-                  } else {
-                      console.log("signal sent");
+    if (isSubscribe) {
+        removeStream(_stream);
+        session.signal({
+            type: "endcall",
+            to: _stream.connection,
+            data: { streamId: _selfstream.streamId + "|" + _selfstream.name }
+        },
+                  function (error) {
+                      if (error) {
+                          console.log("signal error: " + error.reason);
+                      } else {
+                          console.log("signal sent");
+                      }
                   }
-              }
-          );
+              );
+    }
 }
 
 function beginCall(obj) {
@@ -337,11 +343,13 @@ function addStream(stream) {
     var subscriberProps = { width: VIDEO_WIDTH, height: VIDEO_HEIGHT };
     subscribers[stream.streamId] = session.subscribe(stream, subscriberDiv.id, subscriberProps);
     subscribers[stream.streamId].restrictFrameRate(false);
+    isSubscribe = true;
 }
 
 
 function removeStream(stream) {
     session.unsubscribe(subscribers[stream.streamId]);
+    isSubscribe = false;
 }
 function show(id) {
     document.getElementById(id).style.display = 'block';
@@ -363,7 +371,7 @@ function stopArchive() {
 function viewArchive() {
     $.post(SAMPLE_SERVER_BASE_URL + '/View', { "ArchiveId": archiveID.toString() })
     .done(function (data) {
-       window.open(data);
+        window.open(data);
     });
 
 }
